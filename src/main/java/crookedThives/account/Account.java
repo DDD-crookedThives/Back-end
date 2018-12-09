@@ -22,10 +22,10 @@ public class Account implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id", nullable= false)
+	@Column(name="id")
 	private Long id;
 	
-	@Column(name="userid", nullable= false)
+	@Column(name="userid")
 	private String userId;
 	
 	@Column(name="username", nullable= false)
@@ -34,7 +34,7 @@ public class Account implements Serializable {
 	@Column(name="password", nullable= false)
 	private String password;
 	
-	@Column(name="password2", nullable= false)
+	@Column(name="password2")
 	private String password2;
 	
 	@Column(name="email", nullable= false)
