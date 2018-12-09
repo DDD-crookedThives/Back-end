@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: DDD_crookedThives
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: kimsungmin
+Implementation-Vendor-Id: crookedThives
+Build-Jdk: 1.8.0_131
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/DDD_crookedThives
+Created-By: Maven Integration for Eclipse
+
