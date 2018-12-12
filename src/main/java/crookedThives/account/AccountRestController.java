@@ -1,6 +1,9 @@
 package crookedThives.account;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,88 +27,131 @@ public class AccountRestController {
 /** 조회   **/	
 	/** 사용자 List **/
 	@GetMapping(value="/user")
-	public ResponseEntity<List<Account>> getUserList(){
-		List<Account> userList = accountRepository.findAll();
-		if(userList.isEmpty()) {
-			return new ResponseEntity<List<Account>>(HttpStatus.NO_CONTENT);
+	public ResponseEntity<Map<String, Object>> getUserList(){
+		Map<String, Object> results = new HashMap<String, Object>();
+		List<Account> userList = accountRepository.findAll();		
+		if(!userList.isEmpty()) {
+			results.put("result", Boolean.TRUE);
+			results.put("message", "ok");
+			results.put("data", userList);
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.OK);
+		} else {
+			results.put("result", Boolean.FALSE);
+			results.put("message", "fail");
+			return new ResponseEntity<Map<String, Object>>(results,HttpStatus.OK);
 		}
-		return new ResponseEntity<List<Account>>(userList,HttpStatus.OK);
 	}
 	
 	/** 특정 사용자 id로 조회 **/
 	@GetMapping(value="/user/{id}")
-	public ResponseEntity<Account> getUserById(@PathVariable Long id){
-		Account user = accountRepository.findById(id).get();
-		if(user==null) {
-			return new ResponseEntity<Account>(HttpStatus.NO_CONTENT);
+	public ResponseEntity<Map<String, Object>> getUserById(@PathVariable Long id){
+		Map<String, Object> results = new HashMap<String, Object>();	
+		Optional<Account> user = accountRepository.findById(id);
+		System.out.println(user);
+		if(user.isPresent()){
+			results.put("result", Boolean.TRUE);
+			results.put("message", "ok");
+			results.put("data", user);
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.OK);
+		} else {
+			results.put("result", Boolean.FALSE);
+			results.put("message", "fail");
+			return new ResponseEntity<Map<String, Object>>(results,HttpStatus.OK);
 		}
-		return new ResponseEntity<Account>(user, HttpStatus.OK);
 	}
 	
 	/** 특정 사용자 userid로 조회 **/
 	@GetMapping(value="/user/{userid}/userid")
-	public ResponseEntity<Account> getUserByUserId(@PathVariable String userid) {
+	public ResponseEntity<Map<String, Object>> getUserByUserId(@PathVariable String userid) {
+		Map<String, Object> results = new HashMap<String, Object>();
 		Account user = accountRepository.findByUserId(userid);
-		if(user == null) {
-			return new ResponseEntity<Account>(HttpStatus.NO_CONTENT);
+		if(user!=null){
+			results.put("result", Boolean.TRUE);
+			results.put("message", "ok");
+			results.put("data", user);
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.OK);
+		} else {
+			results.put("result", Boolean.FALSE);
+			results.put("message", "fail");
+			return new ResponseEntity<Map<String,Object>>(results, HttpStatus.OK);
 		}
-		return new ResponseEntity<Account>(user, HttpStatus.OK);
 	}
 	
 	/** 특정 사용자 username로 조회 **/
 	@GetMapping(value="/user/{username}/username")
-	public ResponseEntity<Account> getUserByUserName(@PathVariable String username) {
+	public ResponseEntity<Map<String, Object>> getUserByUserName(@PathVariable String username) {
+		Map<String, Object> results = new HashMap<String, Object>();
 		Account user = accountRepository.findByUsername(username);
-		if(user == null) {
-			return new ResponseEntity<Account>(HttpStatus.NO_CONTENT);			
+		if(user!=null){
+			results.put("result", Boolean.TRUE);
+			results.put("message", "ok");
+			results.put("data", user);
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.OK);
+		} else {
+			results.put("result", Boolean.FALSE);
+			results.put("message", "fail");
+			return new ResponseEntity<Map<String,Object>>(results, HttpStatus.OK);
 		}
-		return new ResponseEntity<Account>(user, HttpStatus.OK);
+		
 	}
 
 /** 삭제 **/
 	/** 특정 사용자 id로 삭제 **/
 	@DeleteMapping(value = "/user/{id}")
-	public ResponseEntity<Void> deleteAccountByid(@PathVariable Long id){
-		Account account = accountRepository.findById(id).get();
-		if(account==null) {
-			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-		} else {
-			accountRepository.delete(account);
+	public ResponseEntity<Map<String,Object>> deleteAccountByid(@PathVariable Long id){
+		Map<String, Object> results = new HashMap<String, Object>();		
+		try {
+			Account account = accountRepository.findById(id).get();
+			results.put("result", Boolean.TRUE);
+			results.put("message", "ok");
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.OK);
+		} catch(Exception e) {
+			results.put("result", Boolean.FALSE);
+			results.put("message", "fail");
+			return new ResponseEntity<Map<String,Object>>(results, HttpStatus.OK);
 		}
-		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 	
 	/** 특정 사용자 userid로 삭제 **/
 	@DeleteMapping(value = "/user/{userid}/userid")
-	public ResponseEntity<Void> deleteAccountByUserid(@PathVariable String userid){
-		Account account = accountRepository.findByUserId(userid);
-		if(account==null) {
-			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-		} else {
+	public ResponseEntity<Map<String, Object>> deleteAccountByUserid(@PathVariable String userid){
+		Map<String, Object> results = new HashMap<String, Object>();
+		try {
+			Account account = accountRepository.findByUserId(userid);
 			accountRepository.delete(account);
+			results.put("result", Boolean.TRUE);
+			results.put("message", "ok");
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.OK);
+		} catch(Exception e) {
+			results.put("result", Boolean.FALSE);
+			results.put("message", "fail");
+			return new ResponseEntity<Map<String,Object>>(results, HttpStatus.OK);
 		}
-		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
 /** 등록  **/
 	/** user 계정 등록 **/
 	@PostMapping(value="/user")
-	public ResponseEntity<Account> createUser(@ModelAttribute("Account") Account account) {
+	public ResponseEntity<Map<String, Object>> createUser(@ModelAttribute("Account") Account account) {
+		Map<String, Object> results = new HashMap<String, Object>();
 		try {
 			accountRepository.save(account);
-			return new ResponseEntity<Account>(HttpStatus.CREATED);
+			results.put("result", Boolean.TRUE);
+			results.put("message", "ok");
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.CREATED);
 		} catch(Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<Account>(HttpStatus.NO_CONTENT);
+			results.put("result", Boolean.FALSE);
+			results.put("message", "fail");
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.OK);
 		}
 	}
 
 /** 수정  **/
 	/** 특정 사용자 id로부터 사진, 키, 몸무게 수정 **/
 	@PutMapping(value="user/{id}")
-	public ResponseEntity<Account> updateUserByid(@PathVariable Long id, @RequestParam(required=false) String photo, 
+	public ResponseEntity<Map<String, Object>> updateUserByid(@PathVariable Long id, @RequestParam(required=false) String photo, 
 			@RequestParam(required=false) Double weight, @RequestParam(required=false) Double height) {
-		
+		Map<String, Object> results = new HashMap<String, Object>();
 		try{
 			Account account = accountRepository.findById(id).get();
 			
@@ -126,10 +172,15 @@ public class AccountRestController {
 			}
 			
 			accountRepository.save(account);
-			return new ResponseEntity<Account>(HttpStatus.CREATED);
+			
+			results.put("result", Boolean.TRUE);
+			results.put("message", "ok");
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.CREATED);
 		} catch(Exception e){
-			e.printStackTrace();
-			return new ResponseEntity<Account>(HttpStatus.CONFLICT);
+			//e.printStackTrace();
+			results.put("result", Boolean.FALSE);
+			results.put("message", "fail");
+			return new ResponseEntity<Map<String, Object>>(results, HttpStatus.OK);
 		}
 	}
 	
