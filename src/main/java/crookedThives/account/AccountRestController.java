@@ -133,6 +133,11 @@ public class AccountRestController {
 	/** user 계정 등록 **/
 	@PostMapping(value="/user")
 	public ResponseEntity<Map<String, Object>> createUser(@ModelAttribute("Account") Account account) {
+//		Boolean duplicateAccount = accountRepository.findByEmail(account.getEmail());
+//		if(duplicateAccount){
+//			//동일한 이메일 존재시!!
+//			System.out.println("!!!!!!!!!!!!존재한다!!!!!!!!");
+//		}
 		Map<String, Object> results = new HashMap<String, Object>();
 		try {
 			accountRepository.save(account);
