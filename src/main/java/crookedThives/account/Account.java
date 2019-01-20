@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import crookedThives.config.Gender;
 import lombok.Getter;
 import lombok.Setter;
 

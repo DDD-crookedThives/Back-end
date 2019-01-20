@@ -1,0 +1,14 @@
+crookedThives\config\SwaggerConfig.class
+crookedThives\user\UserService.class
+crookedThives\account\Account.class
+crookedThives\config\Gender.class
+crookedThives\user\User.class
+crookedThives\dog\DogsRestController.class
+crookedThives\dog\DogsRepository.class
+crookedThives\user\SaveUser.class
+crookedThives\dog\Dogs.class
+crookedThives\user\UserRestController.class
+crookedThives\DddCrookedThivesApplication.class
+crookedThives\account\AccountRepository.class
+crookedThives\user\UserRepository.class
+crookedThives\account\AccountRestController.class
