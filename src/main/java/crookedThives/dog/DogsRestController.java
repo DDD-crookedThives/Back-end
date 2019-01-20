@@ -31,10 +31,11 @@ public class DogsRestController {
 	private UserRepository userRepository;
 	
 	//userid의 dog를 검색
-	@GetMapping(value="/dogs/userid")
-	public ResponseEntity<Map<String,Object>> getDogs(@RequestParam("userid") User userid) {
+	@GetMapping(value="/dogs/token")
+	public ResponseEntity<Map<String,Object>> getDogs(@RequestParam("token") String token) {
 		Map<String, Object> results = new HashMap<String, Object>();
-		List<Dogs> dogsList = dogsRepository.findByUserid(userid);
+		User user = userRepository.findByToken(token);
+		List<Dogs> dogsList = dogsRepository.findByUserid(user);
 		if(!dogsList.isEmpty()){
 			results.put("result", Boolean.TRUE);
 			results.put("message", "ok");
@@ -49,12 +50,12 @@ public class DogsRestController {
 		return new ResponseEntity<Map<String, Object>>(results, HttpStatus.OK);
 	}
 	
-	@PostMapping(value="/dogs/userid") 
-	public ResponseEntity<Map<String, Object>> createDogs(@RequestParam("userid") Long userid, @ModelAttribute("Dogs") DogsPojo dogPojo){
+	@PostMapping(value="/dogs/token") 
+	public ResponseEntity<Map<String, Object>> createDogs(@RequestParam("token") String token, @ModelAttribute("Dogs") DogsPojo dogPojo){
 		Map<String, Object> results = new HashMap<String, Object>();
 		try{
 			Dogs dog = new Dogs();
-			User user = userRepository.findById(userid).get();
+			User user = userRepository.findByToken(token);
 			dog.setUserid(user);
 			dog.setName(dogPojo.getName());
 			dog.setPhoto(dogPojo.getPhoto());

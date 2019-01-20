@@ -12,4 +12,8 @@ import crookedThives.user.User;
 public interface DogsRepository extends JpaRepository<Dogs, Long> {
 
 	List<Dogs> findByUserid(User userid);
+
+	Dogs findByUseridAndName(User user, String dogName);
+
+	
 }

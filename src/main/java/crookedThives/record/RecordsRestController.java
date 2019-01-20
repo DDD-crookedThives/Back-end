@@ -51,10 +51,12 @@ public class RecordsRestController {
 		return new ResponseEntity<Map<String,Object>> (results, HttpStatus.OK);
 	}
 	
-	@GetMapping(value="/records/dogid")
-	public ResponseEntity<Map<String, Object>> getRecordsByDogid(@RequestParam("dogid") Dogs dogid) {
+	@GetMapping(value="/records/tokenAndDogName")
+	public ResponseEntity<Map<String, Object>> getRecordsByDogid(@RequestParam("token") String token, @RequestParam("name") String dogName) {
 		Map<String, Object> results = new HashMap<String, Object>();
-		List<Records> recordsList = recordsRepository.findByDogid(dogid);
+		User user = userRepository.findByToken(token);
+		Dogs dogs = dogsRepository.findByUseridAndName(user, dogName);
+		List<Records> recordsList = recordsRepository.findByDogid(dogs);
 		if(!recordsList.isEmpty()){
 			results.put("result", Boolean.TRUE);
 			results.put("message", "ok");
@@ -69,10 +71,11 @@ public class RecordsRestController {
 		return new ResponseEntity<Map<String,Object>> (results, HttpStatus.OK);
 	}
 	
-	@GetMapping(value="/records/userid")
-	public ResponseEntity<Map<String, Object>> getRecordsByUserid(@RequestParam("userid") User userid) {
+	@GetMapping(value="/records/token")
+	public ResponseEntity<Map<String, Object>> getRecordsByUserid(@RequestParam("token") String token) {
 		Map<String, Object> results = new HashMap<String, Object>();
-		List<Records> recordsList = recordsRepository.findByUserid(userid);
+		User user = userRepository.findByToken(token);
+		List<Records> recordsList = recordsRepository.findByUserid(user);
 		if(!recordsList.isEmpty()){
 			results.put("result", Boolean.TRUE);
 			results.put("message", "ok");
@@ -87,12 +90,15 @@ public class RecordsRestController {
 		return new ResponseEntity<Map<String,Object>> (results, HttpStatus.OK);
 	}
 	
-	@PostMapping(value="/records")
-	public ResponseEntity<Map<String, Object>> createRecords(@RequestParam("dogid") Long dogid, @ModelAttribute("records") RecordsPojo recordsPojo){
+	@PostMapping(value="/records/tokenAndDogName")
+	public ResponseEntity<Map<String, Object>> createRecords(@RequestParam("token") String token, @RequestParam("name") String dogName, @ModelAttribute("records") RecordsPojo recordsPojo){
 		Map<String, Object> results = new HashMap<>();
 		try{
-			Dogs dog = dogsRepository.findById(dogid).get();
-			User user = dog.getUserid();
+			User user = userRepository.findByToken(token);
+			Dogs dog = dogsRepository.findByUseridAndName(user, dogName);
+//			List<Records> recordsList = recordsRepository.findByDogid(dogs);			
+//			Dogs dog = dogsRepository.findById(dogid).get();
+//			User user = dog.getUserid();
 			String now_time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 			String now_time_m = new SimpleDateFormat("yyyy-MM").format(Calendar.getInstance().getTime());
 			Records saveRecords = new Records(dog, user, recordsPojo.getTotal_meter(), recordsPojo.getTotal_time(), recordsPojo.getCalorie(), recordsPojo.getAchieve_meter(),
