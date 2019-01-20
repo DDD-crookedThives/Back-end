@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import crookedThives.config.Gender;
+
 @RestController
 public class UserRestController {
 	// http://localhost:8080/swagger-ui.html#/
@@ -124,9 +126,9 @@ public class UserRestController {
 	
 	/** 수정  **/
 	/** 특정 사용자 token으로부터 사진, 키, 몸무게 수정 **/
-	@PutMapping(value="user/token")
+	@PutMapping(value="/user/token")
 	public ResponseEntity<Map<String, Object>> updateUserByToken(@RequestParam("token") String token, @RequestParam(required=false) String photo, 
-			@RequestParam(required=false) Double weight, @RequestParam(required=false) Double height) {
+			@RequestParam(required=false) Gender gender, @RequestParam(required=false) Double weight, @RequestParam(required=false) Double height) {
 		Map<String, Object> results = new HashMap<String, Object>();
 		try{
 			User user = userRepository.findByToken(token);
@@ -135,6 +137,11 @@ public class UserRestController {
 				user.setPhoto(photo);
 			} else {
 				user.setPhoto(user.getPhoto());
+			}
+			if(gender!= null) {
+				user.setGender(gender);
+			} else {
+				user.setGender(user.getGender());
 			}
 			if(weight!=null) {
 				user.setWeight(weight);
