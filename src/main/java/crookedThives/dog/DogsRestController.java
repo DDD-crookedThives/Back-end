@@ -1,5 +1,7 @@
 package crookedThives.dog;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +60,7 @@ public class DogsRestController {
 			dog.setPhoto(dogPojo.getPhoto());
 			dog.setGender(dogPojo.getGender());
 			dog.setBirth(dogPojo.getBirth());
+			dog.setReg_ymd(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
 	
 			dogsRepository.save(dog);
 			results.put("result", Boolean.TRUE);
